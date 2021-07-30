@@ -1,0 +1,608 @@
+<html>
+<head>
+<title> Custom Game </title>
+<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
+<script>
+
+var cash = 0;
+var cash_txt;
+var mul = 1;
+var mul_txt;
+var potion = 1;
+var upgrade = 0;
+var potion_txt;
+
+function start(){
+	sjs.open("target",800,500);
+	var background = new sjs.Image("Images/background.png");
+	background.setSize(1000, 500);
+
+	var ground = new sjs.Image("Images/invisible.png");
+	ground.type = "ground";
+	ground.setSize(1000,45);
+	ground.centerH();
+	ground.bottom();
+
+	var villager = new sjs.Image("Images/villager.png");
+	villager.type = "villager";
+	villager.setSize(80,100);
+	villager.moveTo(0,360);
+
+	//Player Properties 
+	var player = new sjs.Image("Images/idleRight.gif");
+	player.type = "player"; 
+	player.setSize(100,100);
+	player.setGravity(9);
+	player.centerV();
+	player.friction = .3; 
+	player.noBounds = true;
+
+	sjs.scrollable(player,background);
+
+	//Cash
+	cash_txt = new sjs.Text("Cash: 0", 21, "orange");
+	cash_txt.moveTo(0, 0);
+	cash_txt.fixed = true;
+
+	//Multilplier
+	mul_txt = new sjs.Text("Multilplier: 1", 21, "orange");
+	mul_txt.moveTo(0, 20);
+	mul_txt.fixed = true;
+
+	//Upgrade
+	updgrade_txt = new sjs.Text("Cash per Second: 0", 21, "orange");
+	updgrade_txt.moveTo(0, 40);
+	updgrade_txt.fixed = true;
+
+	var tool = new sjs.Image("Images/woodPic.png");
+	tool.setSize(80,80);
+	tool.moveTo(720,0);
+	tool.fixed = true;
+
+	var inCoal = 0;
+	var inIron = 0;
+	var inDiamond = 0;
+	var inNetherite = 0;
+	var inShop = 0;
+
+	//coal ore
+	var coal = new sjs.Image("Images/coal.png");
+	coal.type = "coal";
+	coal.setSize(50,50);
+	coal.moveTo(550,400);
+
+	//iron ore
+	var iron = new sjs.Image("Images/iron.png");
+	iron.type = "iron";
+	iron.setSize(50,50);
+	iron.moveTo(650,400);
+
+	//diamond ore
+	var diamond = new sjs.Image("Images/diamond.png");
+	diamond.type = "diamond";
+	diamond.setSize(50,50);
+	diamond.moveTo(750,400);
+
+	//netherite ore
+	var netherite = new sjs.Image("Images/netherite.png");
+	netherite.type = "netherite";
+	netherite.setSize(50,50);
+	netherite.moveTo(850,400);
+
+	var shop_txt = new sjs.Text("What would you like to buy?", 21, "lime");
+	shop_txt.noBounds = true;
+	shop_txt.moveTo(-100,-100);
+	//shop_txt.fixed = true;
+
+	var stonePic = new sjs.Image("Images/stonePic.png");
+	stonePic.setSize(80,80);
+	stonePic.noBounds = true;
+	stonePic.moveTo(-100,-100);
+	var price1 = new sjs.Text("$100", 15, "lime");
+	price1.noBounds = true;
+	price1.moveTo(-100,-100);
+
+	var ironPic = new sjs.Image("Images/ironPic.png");
+	ironPic.setSize(80,80);
+	ironPic.noBounds = true;
+	ironPic.moveTo(-100,-100);
+	var price2 = new sjs.Text("$10000", 15, "lime");
+	price2.noBounds = true;
+	price2.moveTo(-100,-100);
+
+	var diamondPic = new sjs.Image("Images/diamondPic.png");
+	diamondPic.setSize(80,80);
+	diamondPic.noBounds = true;
+	diamondPic.moveTo(-100,-100);
+	var price3 = new sjs.Text("$1000000", 15, "lime");
+	price3.noBounds = true;
+	price3.moveTo(-100,-100);
+
+	var netheritePic = new sjs.Image("Images/netheritePic.png");
+	netheritePic.setSize(80,80);
+	netheritePic.noBounds = true;
+	netheritePic.moveTo(-100,-100);
+	var price4 = new sjs.Text("$100000000", 15, "lime");
+	price4.noBounds = true;
+	price4.moveTo(-100,-100);
+
+	var speedPot = new sjs.Image("Images/speedPot.png");
+	speedPot.setSize(60,60);
+	speedPot.noBounds = true;
+	speedPot.moveTo(-100,-100);
+	var price5 = new sjs.Text("$50", 15, "lime");
+	price5.noBounds = true;
+	price5.moveTo(-100,-100);
+
+	var tnt = new sjs.Image("Images/tnt.png");
+	tnt.setSize(60,60);
+	tnt.noBounds = true;
+	tnt.moveTo(-100,-100);
+	var price6 = new sjs.Text("$1000", 15, "lime");
+	price6.noBounds = true;
+	price6.moveTo(-100,-100);
+	var amount1 = 0;
+	var amount1txt = new sjs.Text("Purchased: " + amount1, 15, "blue");
+	amount1txt.noBounds = true;
+	amount1txt.moveTo(-100,-100);
+
+	var piston = new sjs.Image("Images/piston.png");
+	piston.setSize(60,60);
+	piston.noBounds = true;
+	piston.moveTo(-100,-100);
+	var price7 = new sjs.Text("$5000", 15, "lime");
+	price7.noBounds = true;
+	price7.moveTo(-100,-100);
+	var amount2 = 0;
+	var amount2txt = new sjs.Text("Purchased: " + amount2, 15, "blue");
+	amount2txt.noBounds = true;
+	amount2txt.moveTo(-100,-100);
+
+	var stickypiston = new sjs.Image("Images/stickyPiston.png");
+	stickypiston.setSize(60,60);
+	stickypiston.noBounds = true;
+	stickypiston.moveTo(-100,-100);
+	var price8 = new sjs.Text("$15000", 15, "lime");
+	price8.noBounds = true;
+	price8.moveTo(-100,-100);
+	var amount3 = 0;
+	var amount3txt = new sjs.Text("Purchased: " + amount3, 15, "blue");
+	amount3txt.noBounds = true;
+	amount3txt.moveTo(-100,-100);
+
+	var redstone = new sjs.Image("Images/redstoneblock.png");
+	redstone.setSize(60,60);
+	redstone.noBounds = true;
+	redstone.moveTo(-100,-100);
+	var price9 = new sjs.Text("$10000", 15, "lime");
+	price9.noBounds = true;
+	price9.moveTo(-100,-100);
+	var amount4 = 0;
+	var amount4txt = new sjs.Text("Purchased: " + amount4, 15, "blue");
+	amount4txt.noBounds = true;
+	amount4txt.moveTo(-100,-100);
+
+	var dragon = new sjs.Image("Images/dragon.png");
+	dragon.setSize(100,60);
+	dragon.noBounds = true;
+	dragon.moveTo(-100,-100);
+	var price10 = new sjs.Text("$1000000000", 15, "lime");
+	price10.noBounds = true;
+	price10.moveTo(-100,-100);
+	var amount5 = 0;
+	var amount5txt = new sjs.Text("Purchased: " + amount5, 15, "blue");
+	amount5txt.noBounds = true;
+	amount5txt.moveTo(-100,-100);
+
+	var toolNum = 0;
+
+	stonePic.onClick(function(){
+		if(toolNum < 1)
+		{
+			if(cash >= 100){
+				cash = cash -100;
+				cash_txt.setText("Cash: "+cash);
+				tool.setImage("Images/stonePic.png");
+				toolNum = 1;
+				mul = 2;
+				mul_txt.setText("Multilplier: "+mul * potion);
+			}
+		}
+	});
+
+	ironPic.onClick(function(){
+		if(toolNum < 2)
+		{
+			if(cash >= 10000){
+				cash = cash -10000;
+				cash_txt.setText("Cash: "+cash);
+				tool.setImage("Images/ironPic.png");
+				toolNum = 2;
+				mul = 3;
+				mul_txt.setText("Multilplier: "+mul * potion);
+			}
+		}
+	});
+
+	diamondPic.onClick(function(){
+		if(toolNum < 3)
+		{
+			if(cash >= 1000000){
+				cash = cash -1000000;
+				cash_txt.setText("Cash: "+cash);
+				tool.setImage("Images/diamondPic.png");
+				toolNum = 3;
+				mul = 4;
+				mul_txt.setText("Multilplier: "+mul * potion);
+			}
+		}
+	});
+
+	netheritePic.onClick(function(){
+		if(toolNum < 4)
+		{
+			if(cash >= 100000000){
+				cash = cash -100000000;
+				cash_txt.setText("Cash: "+cash);
+				tool.setImage("Images/netheritePic.png");
+				toolNum = 4;
+				mul = 5;
+				mul_txt.setText("Multilplier: "+mul * potion);
+			}
+		}
+	});
+
+	speedPot.onClick(function(){
+		if(potion < 2)
+		{
+			if(cash >= 50){
+				cash = cash -50;
+				cash_txt.setText("Cash: "+cash);
+				potion = 2;
+				mul_txt.setText("Multilplier: "+mul * potion);
+				setTimeout(function(){
+					potion = 1;
+					mul_txt.setText("Multilplier: "+mul * potion);
+				}, 20000);
+			}
+		}
+	});
+
+	tnt.onClick(function(){
+		if(cash >= 1000){
+			cash = cash -1000;
+			cash_txt.setText("Cash: "+cash);
+			amount1 = amount1 + 1;
+			amount1txt.setText("Purchased: "+amount1);
+		}
+	});
+
+	piston.onClick(function(){
+		if(cash >= 5000){
+			cash = cash -5000;
+			cash_txt.setText("Cash: "+cash);
+			amount2 = amount2 + 1;
+			amount2txt.setText("Purchased: "+amount2);
+		}
+	});
+
+	stickypiston.onClick(function(){
+		if(cash >= 15000){
+			cash = cash -15000;
+			cash_txt.setText("Cash: "+cash);
+			amount3 = amount3 + 1;
+			amount3txt.setText("Purchased: "+amount3);
+		}
+	});
+
+	redstone.onClick(function(){
+		if(cash >= 10000){
+			cash = cash -10000;
+			cash_txt.setText("Cash: "+cash);
+			amount4 = amount4 + 1;
+			amount4txt.setText("Purchased: "+amount4);
+		}
+	});
+
+	dragon.onClick(function(){
+		if(cash >= 1000000000){
+			cash = cash -1000000000;
+			cash_txt.setText("Cash: "+cash);
+			amount5 = amount5 + 1;
+			amount5txt.setText("Purchased: "+amount5);
+		}
+	});
+
+	player.onClick( function(){
+		if(inCoal > 0){
+			cash = cash +1 * mul *potion;
+			cash_txt.setText("Cash: "+cash);
+			coal.grow(10,10);
+			setTimeout(function()
+			{
+				coal.grow(-10,-10);
+			}, 50);
+		}
+		if(inIron > 0 && toolNum > 0){
+			cash = cash +10 * mul *potion;
+			cash_txt.setText("Cash: "+cash);
+			iron.grow(10,10);
+			setTimeout(function()
+			{
+				iron.grow(-10,-10);
+			}, 50);
+		}
+		if(inDiamond > 0 && toolNum > 1){
+			cash = cash +100 * mul *potion;
+			cash_txt.setText("Cash: "+cash);
+			diamond.grow(10,10);
+			setTimeout(function()
+			{
+				diamond.grow(-10,-10);
+			}, 50);
+		}
+		if(inNetherite > 0 && toolNum > 2){
+			cash = cash +1000 * mul *potion;
+			cash_txt.setText("Cash: "+cash);
+			netherite.grow(10,10);
+			setTimeout(function()
+			{
+				netherite.grow(-10,-10);
+			}, 50);
+		}
+		if(inShop > 0){
+			shop_txt.moveTo(100,50);
+
+			stonePic.moveTo(25,100);
+			price1.moveTo(25,150);
+
+			ironPic.moveTo(125,100);
+			price2.moveTo(125,150);
+
+			diamondPic.moveTo(225,100);
+			price3.moveTo(225,150);
+
+			netheritePic.moveTo(325,100);
+			price4.moveTo(325,150);
+
+			speedPot.moveTo(425,100);
+			price5.moveTo(425,150);
+
+			tnt.moveTo(25,200);
+			price6.moveTo(25,250);
+			amount1txt.moveTo(30,275);
+
+			piston.moveTo(125,200);
+			price7.moveTo(125,250);
+			amount2txt.moveTo(130,275);
+
+			stickypiston.moveTo(225,200);
+			price8.moveTo(225,250);
+			amount3txt.moveTo(230,275);
+
+			redstone.moveTo(325,200);
+			price9.moveTo(325,250);
+			amount4txt.moveTo(330,275);
+
+			dragon.moveTo(425,200);
+			price10.moveTo(425,250);
+			amount5txt.moveTo(430,275);
+		}
+	});
+
+	setInterval(function(){
+		upgrade = (amount1 + (amount2*5) + (amount3*10));
+		if(amount4 > 0){
+			upgrade = upgrade *(amount4*2);
+		}
+		if(amount5 > 0){
+			upgrade = upgrade *(amount5*10);
+		}
+		updgrade_txt.setText("Cash per Second: "+ upgrade);
+		cash = cash + upgrade;
+		cash_txt.setText("Cash: "+cash);
+	}, 1000);
+
+	//Player movement controls 
+	var r_images = ["Images/runRight/run-1.png","Images/runRight/run-2.png","Images/runRight/run-3.png","Images/runRight/run-4.png","Images/runRight/run-5.png","Images/runRight/run-6.png","Images/runRight/run-7.png","Images/runRight/run-8.png","Images/runRight/run-9.png","Images/runRight/run-10.png","Images/runRight/run-11.png","Images/runRight/run-12.png"];
+
+	var l_images = ["Images/runLeft/run-1.png","Images/runLeft/run-2.png","Images/runLeft/run-3.png","Images/runLeft/run-4.png","Images/runLeft/run-5.png","Images/runLeft/run-6.png","Images/runLeft/run-7.png","Images/runLeft/run-8.png","Images/runLeft/run-9.png","Images/runLeft/run-10.png","Images/runLeft/run-11.png","Images/runLeft/run-12.png"];
+
+	var r_facing = true;
+	var r_track = 0;
+	var l_track = 0;  
+
+	sjs.keyDown(RIGHT_KEY, function(){
+		r_facing = true;
+		r_track = r_track + 1;
+		player.pushRight(2); 
+		player.setImage(r_images[r_track]);
+		if(r_track == 11){
+			r_track = 0;
+		} 
+		if(r_track >= 11){
+			player.setImage("Images/idleRight.gif");
+		} 
+	}); //end Right key 
+
+	sjs.keyDown(LEFT_KEY, function(){
+		r_facing = false;
+		l_track = l_track + 1;
+		player.pushLeft(2); 
+		player.setImage(l_images[l_track]);
+		if(l_track == 11){
+			l_track = 0;
+		} 
+		if(l_track >= 12){
+			player.setImage("Images/idleLeft.gif");
+		} 
+	}); //end Left key 
+
+	//Jumping Code
+	var canJump = true;
+	sjs.keyDown(UP_KEY, function(){
+		if(canJump == true){
+			canJump = false;
+			player.pushUp(55);
+			if(r_facing == true){
+				if(canJump == false)
+				{
+					player.setImage("Images/jumpRight.gif");
+				}
+				r_track = 12;
+			} else { 
+				{
+					player.setImage("Images/jumpLeft.gif");
+				}
+				l_track = 12; 
+			}  
+		} //end if statement
+	}); //end keyDown function
+
+	window.addEventListener("keyup", function(e){
+		if(e.keyCode == RIGHT_KEY){
+			player.setImage("Images/idleRight.gif");
+			r_track = 0;
+		} else if (e.keyCode == LEFT_KEY){
+			player.setImage("Images/idleLeft.gif");
+			l_track = 0;
+		} //end if statement
+	}); //end EventListener function
+
+	var temp1 = 0;
+	var temp2 = 0;
+	var temp3 = 0;
+	var temp4 = 0;
+	var temp5 = 0;
+
+	sjs.onHit("player","ground",function(x,y){
+		sjs.stoppedBy(x,y);
+		if(canJump == false){
+			canJump = true;
+			r_track = 0;
+			l_track = 0;
+			player.setImage("Images/idleRight.gif");
+		}
+
+		if(inCoal > 0){
+			if(inCoal == temp1){
+				inCoal = 0;
+				temp1 = 0;
+				//cash_txt.setText("Cash: 0");
+			}
+			else{
+				temp1 = inCoal;
+			}
+		}
+		if(inIron > 0){
+			if(inIron == temp2){
+				inIron = 0;
+				temp2 = 0;
+			}
+			else{
+				temp2 = inIron;
+			}
+		}
+		if(inDiamond > 0){
+			if(inDiamond == temp4){
+				inDiamond = 0;
+				temp4 = 0;
+			}
+			else{
+				temp4 = inDiamond;
+			}
+		}
+		if(inNetherite > 0){
+			if(inNetherite == temp3){
+				inNetherite = 0;
+				temp3 = 0;
+			}
+			else{
+				temp3 = inNetherite;
+			}
+		}
+		if(inShop > 0){
+			if(inShop == temp5){
+				inShop = 0;
+				temp5 = 0;
+				shop_txt.moveTo(-100,-100);
+
+				stonePic.moveTo(-100,-100);
+				price1.moveTo(-100,-100);
+
+				ironPic.moveTo(-100,-100);
+				price2.moveTo(-100,-100);
+
+				diamondPic.moveTo(-100,-100);
+				price3.moveTo(-100,-100);
+
+				netheritePic.moveTo(-100,-100);
+				price4.moveTo(-100,-100);
+
+				speedPot.moveTo(-100,-100);
+				price5.moveTo(-100,-100);
+
+				tnt.moveTo(-100,-100);
+				price6.moveTo(-100,-100);
+				amount1txt.moveTo(-100,-100);
+
+				piston.moveTo(-100,-100);
+				price7.moveTo(-100,-100);
+				amount2txt.moveTo(-100,-100);
+
+				stickypiston.moveTo(-100,-100);
+				price8.moveTo(-100,-100);
+				amount3txt.moveTo(-100,-100);
+
+				redstone.moveTo(-100,-100);
+				price9.moveTo(-100,-100);
+				amount4txt.moveTo(-100,-100);
+
+				dragon.moveTo(-100,-100);
+				price10.moveTo(-100,-100);
+				amount5txt.moveTo(-100,-100);
+			}
+			else{
+				temp5 = inShop;
+			}
+		}
+	}); 
+
+	sjs.onHit("player",["right_screen","left_screen","top_screen"],function(x,y){
+		sjs.stoppedBy(x,y); 
+	});
+
+	sjs.onHit("player", "coal", function(x,y){
+		inCoal = inCoal + 1;
+		//cash_txt.setText("Cash: 1");
+	});
+	sjs.onHit("player", "iron", function(x,y){
+		inIron = inIron + 1;
+	});
+	sjs.onHit("player", "diamond", function(x,y){
+		inDiamond = inDiamond + 1;
+	});
+	sjs.onHit("player", "netherite", function(x,y){
+		inNetherite = inNetherite + 1;
+	});
+	sjs.onHit("player", "villager", function(x,y){
+		inShop = inShop + 1;
+	});
+
+
+}//end start function
+
+function add(x)
+{
+	cash = cash + x;
+	cash_txt.setText("Cash: "+cash);
+}
+</script>
+</head>
+<body onload="start()">
+	<h1> Platform Game </h1>
+	<div id="target" style="margin:auto;background:grey;"></div>
+	<div id="output"></div> 
+	<div style="margin:5rem;"></div>
+</body>
+</html>
